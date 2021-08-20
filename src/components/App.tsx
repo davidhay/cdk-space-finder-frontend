@@ -1,25 +1,56 @@
-import { FC, useState } from "react";
-import { ChildComponent } from "./ChildComponent";
+import React from "react";
+import { User } from "../model/Model";
+import { AuthService } from "../services/AuthService";
+import { Login } from "./Login";
+import { Router, Route, Switch } from "react-router-dom";
+import history from "../utils/history";
+import { Navbar } from "./Navbar";
+import { Home } from "./Home";
+import { Profile } from "./Profile";
 
 interface AppState {
-  appCounter: number;
+  user: User | undefined; //sweet
 }
 
-const App: FC<{}> = () => {
-  const [counter, setCounter] = useState({ appCounter: 0 } as AppState);
+export class App extends React.Component<{}, AppState> {
+  private authService: AuthService = new AuthService();
 
-  const incrementCounter = () => {
-    setCounter((oldState) => {
-      return { appCounter: oldState.appCounter + 1 };
+  constructor(props: any) {
+    super(props);
+    this.setUser = this.setUser.bind(this); //nice
+    this.state = {
+      user: undefined,
+    };
+  }
+
+  private setUser(user: User) {
+    this.setState({
+      user: user,
     });
-  };
+    console.log("setting the user!: " + JSON.stringify(user));
+  }
 
-  return (
-    <div>
-      This is the Parent component! <br />
-      <button onClick={incrementCounter}> Increment parent counter</button>
-      <ChildComponent appCounter={counter.appCounter} />
-    </div>
-  );
-};
-export default App;
+  render() {
+    return (
+      <div className="wrapper">
+        <Router history={history}>
+          <div>
+            <Navbar user={this.state.user} />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/login">
+                <Login authService={this.authService} setUser={this.setUser} />
+              </Route>
+              <Route exact path="/profile">
+                <Profile
+                  authService={this.authService}
+                  user={this.state.user}
+                />
+              </Route>
+            </Switch>
+          </div>
+        </Router>
+      </div>
+    );
+  }
+}
