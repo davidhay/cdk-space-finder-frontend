@@ -1,19 +1,19 @@
 import { Component } from "react";
 import genericImage from "../../assets/generic-image.jpg";
+import "./SpaceComponent.css";
 
 interface SpaceComponentProps {
   spaceId: string;
   name: string;
   location: string;
-  photoUrl?: string;
+  photoURL?: string;
   reserveSpace: (spaceId: string) => void;
 }
 
 export class SpaceComponent extends Component<SpaceComponentProps> {
-  //nice
   private renderImage() {
-    if (this.props.photoUrl) {
-      return <img src={this.props.photoUrl} alt="" />;
+    if (this.props.photoURL) {
+      return <img src={this.props.photoURL} alt="" />;
     } else {
       return <img src={genericImage} alt="" />;
     }
@@ -21,13 +21,13 @@ export class SpaceComponent extends Component<SpaceComponentProps> {
 
   render() {
     return (
-      <div>
+      <div className="spaceComponent">
         {this.renderImage()}
-        <label>{this.props.name}</label>
+        <label className="name">{this.props.name}</label>
         <br />
-        <label>{this.props.spaceId}</label>
+        <label className="spaceId">{this.props.spaceId}</label>
         <br />
-        <label>{this.props.location}</label>
+        <label className="location">{this.props.location}</label>
         <br />
         <button onClick={() => this.props.reserveSpace(this.props.spaceId)}>
           Reserve
